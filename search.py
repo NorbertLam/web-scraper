@@ -12,17 +12,16 @@ def search(url, visited, current, target):
     current_num = current + 1
     target_num = target
 
-    my_url = url
-    url_parse = urlparse(my_url)
+    url_parse = urlparse(url)
     url_scheme = url_parse.scheme
-    url_front = url_parse.hostname
-    url_end = url_parse.path
+    url_hostname = url_parse.hostname
+    url_path = url_parse.path
 
-    my_page = urllib.request.urlopen(my_url).read()
+    my_page = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(my_page, 'lxml')
     html_get = str(soup.prettify())
 
-    requests.post("http://localhost:8000/page/", json.dumps({"Title": url_end, "Body": html_get}))
+    requests.post("http://localhost:8000/page/", json.dumps({"Title": url_path, "Body": html_get}))
 
     for line in soup.find_all('a', href=True):
 
@@ -31,7 +30,7 @@ def search(url, visited, current, target):
                 and ":" not in line['href'] and "=edit" not in line['href']:
 
             visited.append(line['href'])
-            new_url = url_scheme + "://" + url_front + line['href']
+            new_url = url_scheme + "://" + url_hostname + line['href']
 
             search(new_url, visited, current_num, target_num)
 
