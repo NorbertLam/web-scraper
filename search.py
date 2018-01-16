@@ -1,9 +1,10 @@
 import urllib.request
 import requests
 import json
+import sys
+import os
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-import sys
 
 
 def search(url, visited, current, target):
@@ -12,6 +13,7 @@ def search(url, visited, current, target):
     current_num = current + 1
     target_num = target
 
+    endpoint = os.environ.get('ENDPOINT')
     url_parse = urlparse(url)
     url_scheme = url_parse.scheme
     url_hostname = url_parse.hostname
@@ -21,7 +23,7 @@ def search(url, visited, current, target):
     soup = BeautifulSoup(my_page, 'lxml')
     html_get = str(soup.prettify())
 
-    requests.post("http://localhost:8000/page/", json.dumps({"Title": url_path, "Body": html_get}))
+    requests.post(endpoint, json.dumps({"Title": url_path, "Body": html_get}))
 
     for line in soup.find_all('a', href=True):
 
