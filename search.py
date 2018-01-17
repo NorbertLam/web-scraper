@@ -19,11 +19,11 @@ def search(url, visited, current, target):
     url_hostname = url_parse.hostname
     url_path = url_parse.path
 
-    my_page = urllib.request.urlopen(url).read()
-    soup = BeautifulSoup(my_page, 'lxml')
+    scrapedPage = urllib.request.urlopen(url).read()
+    soup = BeautifulSoup(scrapedPage, 'lxml')
     html_get = str(soup.prettify())
 
-    requests.post(endpoint, json.dumps({"Title": url_path, "Body": html_get}))
+    requests.post(endpoint, json.dumps({"url": url_path, "html": html_get}))
 
     for line in soup.find_all('a', href=True):
         if '//' not in line['href'] and '#' != str(line['href'])[0] \
@@ -36,7 +36,7 @@ def search(url, visited, current, target):
             search(new_url, visited, current_num, target_num)
 
 if __name__ == '__main__':
-    if len(sys.argv) > 0:
+    if len(sys.argv) == 3:
         search(sys.argv[1], [], 0, int(sys.argv[2]))
     else:
         print("usage: search.py url depth")
