@@ -26,7 +26,6 @@ def search(url, visited, current, target):
     requests.post(endpoint, json.dumps({"Title": url_path, "Body": html_get}))
 
     for line in soup.find_all('a', href=True):
-
         if '//' not in line['href'] and '#' != str(line['href'])[0] \
                 and line['href'] not in visited \
                 and ":" not in line['href'] and "=edit" not in line['href']:
@@ -40,4 +39,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 0:
         search(sys.argv[1], [], 0, int(sys.argv[2]))
     else:
-        print("not valid")
+        print("usage: search.py url depth")
